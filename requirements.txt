@@ -1,0 +1,38 @@
+protobuf
+
+
+# Auth & Users
+httpx-oauth==0.16.1
+
+# Base Framework
+fastapi==0.127.0
+uvicorn[standard]==0.22.0
+starlette~=0.40.0
+contextvars==2.4
+
+# Database & Async Support
+sqlalchemy==2.0.45
+asyncpg==0.31.0
+
+# Configuration & Validation
+pydantic==2.7.0
+pydantic-settings
+
+# Logging & Utilities
+python-dotenv==1.2.1
+httpx==0.28.1
+typing-extensions==4.15.0
+
+#Google Cloud
+google-api-python-client==2.173.0
+google-auth-httplib2==0.2.0
+google-auth-oauthlib==1.2.2
+
+#Scrapping
+beautifulsoup4==4.12.2
+urllib3==2.0.2
+certifi
+requests==2.32.5
+
+
+

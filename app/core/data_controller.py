@@ -1,8 +1,10 @@
 from typing import List
 from pydantic import BaseModel
 
+
 class UpdatableModel(BaseModel):
     """Abstract model for updating db objects"""
+
     def updatable_attributes(self) -> List[str]:
         pass
 

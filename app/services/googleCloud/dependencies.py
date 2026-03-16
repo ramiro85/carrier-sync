@@ -9,7 +9,10 @@ from app.services.googleCloud.controller import GoogleApiController
 
 
 class GoogleServiceAccountApiController(GoogleApiController):
-    SUPPORTED_WORKSPACE_DOMAINS = {settings.google_workspace_domain_account1, settings.google_workspace_domain_account2}
+    SUPPORTED_WORKSPACE_DOMAINS = {
+        settings.google_workspace_domain_account1,
+        settings.google_workspace_domain_account2,
+    }
     SCOPES = [
         "https://www.googleapis.com/auth/gmail.readonly",
         "https://www.googleapis.com/auth/gmail.modify",
@@ -18,11 +21,13 @@ class GoogleServiceAccountApiController(GoogleApiController):
 
     @staticmethod
     def _get_domain(email: str | None) -> str:
+        """Return lowercase domain from an email address."""
         if not email or "@" not in email:
             return ""
         return email.split("@", 1)[1].lower()
 
     def _resolve_account(self, username: str | None) -> tuple[str, str]:
+        """Resolve service-account file and default impersonated user by email domain."""
         domain = self._get_domain(username)
         if domain == settings.google_workspace_domain_account1:
             return (
@@ -36,12 +41,16 @@ class GoogleServiceAccountApiController(GoogleApiController):
 
     @staticmethod
     def _resolve_service_account_file(path: str) -> str:
+        """Resolve relative service-account paths when present on local filesystem."""
         candidate = Path(path)
         if candidate.exists():
             return str(candidate)
         return path
 
-    def _resolve_subject(self, username: str | None, default_impersonated_user: str) -> str:
+    def _resolve_subject(
+        self, username: str | None, default_impersonated_user: str
+    ) -> str:
+        """Pick a delegation subject and reject unsupported domains."""
         if username:
             domain = self._get_domain(username)
             if domain not in self.SUPPORTED_WORKSPACE_DOMAINS:
@@ -56,7 +65,10 @@ class GoogleServiceAccountApiController(GoogleApiController):
         return default_impersonated_user
 
     def authorize(self, username: str | None):
-        service_account_file, default_impersonated_user = self._resolve_account(username)
+        """Authorize a Gmail API client using service-account domain delegation."""
+        service_account_file, default_impersonated_user = self._resolve_account(
+            username
+        )
         service_account_file = self._resolve_service_account_file(service_account_file)
         subject = self._resolve_subject(username, default_impersonated_user)
         # Log the identity before making the request

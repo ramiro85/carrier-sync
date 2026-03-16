@@ -2,20 +2,22 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from typing import Dict, Any
 
 from app.services.eld.dependencies import get_eld_controller
-from app.services.eld.driver.schemas import DriverCreateRequest, DriverUpdateRequest, DriverResponse
+from app.services.eld.driver.schemas import (
+    DriverCreateRequest,
+    DriverUpdateRequest,
+)
 from app.services.eld.driver.controller import ELDDriverController
 
-router = APIRouter(
-    prefix="/api/eld/drivers",
-    tags=["ELD Drivers"]
+router = APIRouter(prefix="/api/eld/drivers", tags=["ELD Drivers"])
+
+
+@router.post(
+    "/{driver_id}", response_model=Dict[str, Any], status_code=status.HTTP_201_CREATED
 )
-
-
-@router.post("/{driver_id}", response_model=Dict[str, Any], status_code=status.HTTP_201_CREATED)
 async def create_driver(
-        driver_id: str,
-        driver_data: DriverCreateRequest,
-        controller: ELDDriverController = Depends(get_eld_controller)
+    driver_id: str,
+    driver_data: DriverCreateRequest,
+    controller: ELDDriverController = Depends(get_eld_controller),
 ):
     """
     Create a new driver in the ELD system.
@@ -29,14 +31,13 @@ async def create_driver(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Failed to create driver: {str(e)}"
+            detail=f"Failed to create driver: {str(e)}",
         )
 
 
 @router.get("/{driver_id}", response_model=Dict[str, Any])
 async def get_driver(
-        driver_id: str,
-        controller: ELDDriverController = Depends(get_eld_controller)
+    driver_id: str, controller: ELDDriverController = Depends(get_eld_controller)
 ):
     """
     Retrieve driver information by ID.
@@ -48,17 +49,16 @@ async def get_driver(
         return result
     except Exception as e:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Driver not found: {str(e)}"
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Driver not found: {str(e)}"
         )
 
 
 @router.put("/{driver_id}", response_model=Dict[str, Any])
 async def update_driver(
-        driver_id: str,
-        driver_data: DriverUpdateRequest,
-        rev: str = None,
-        controller: ELDDriverController = Depends(get_eld_controller)
+    driver_id: str,
+    driver_data: DriverUpdateRequest,
+    rev: str = None,
+    controller: ELDDriverController = Depends(get_eld_controller),
 ):
     """
     Update an existing driver.
@@ -73,15 +73,15 @@ async def update_driver(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Failed to update driver: {str(e)}"
+            detail=f"Failed to update driver: {str(e)}",
         )
 
 
 @router.delete("/{driver_id}", response_model=Dict[str, Any])
 async def delete_driver(
-        driver_id: str,
-        rev: str = None,
-        controller: ELDDriverController = Depends(get_eld_controller)
+    driver_id: str,
+    rev: str = None,
+    controller: ELDDriverController = Depends(get_eld_controller),
 ):
     """
     Delete (deactivate) a driver.
@@ -95,16 +95,16 @@ async def delete_driver(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Failed to delete driver: {str(e)}"
+            detail=f"Failed to delete driver: {str(e)}",
         )
 
 
 @router.get("/company/{company_id}", response_model=Dict[str, Any])
 async def list_drivers(
-        company_id: str,
-        limit: int = 100,
-        skip: int = 0,
-        controller: ELDDriverController = Depends(get_eld_controller)
+    company_id: str,
+    limit: int = 100,
+    skip: int = 0,
+    controller: ELDDriverController = Depends(get_eld_controller),
 ):
     """
     List all drivers for a company.
@@ -119,15 +119,15 @@ async def list_drivers(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Failed to list drivers: {str(e)}"
+            detail=f"Failed to list drivers: {str(e)}",
         )
 
 
 @router.patch("/{driver_id}/activate", response_model=Dict[str, Any])
 async def activate_driver(
-        driver_id: str,
-        rev: str = None,
-        controller: ELDDriverController = Depends(get_eld_controller)
+    driver_id: str,
+    rev: str = None,
+    controller: ELDDriverController = Depends(get_eld_controller),
 ):
     """
     Activate a driver.
@@ -141,15 +141,15 @@ async def activate_driver(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Failed to activate driver: {str(e)}"
+            detail=f"Failed to activate driver: {str(e)}",
         )
 
 
 @router.patch("/{driver_id}/deactivate", response_model=Dict[str, Any])
 async def deactivate_driver(
-        driver_id: str,
-        rev: str = None,
-        controller: ELDDriverController = Depends(get_eld_controller)
+    driver_id: str,
+    rev: str = None,
+    controller: ELDDriverController = Depends(get_eld_controller),
 ):
     """
     Deactivate a driver.
@@ -163,5 +163,5 @@ async def deactivate_driver(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Failed to deactivate driver: {str(e)}"
+            detail=f"Failed to deactivate driver: {str(e)}",
         )

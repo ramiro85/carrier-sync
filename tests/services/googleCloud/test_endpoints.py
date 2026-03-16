@@ -1,13 +1,8 @@
-import os
-
-# Required settings for app.config at import time.
-os.environ.setdefault("SAFER_COOKIE", "test-cookie")
-os.environ.setdefault("TAFS_PORTAL_USERNAME", "test-user")
-os.environ.setdefault("TAFS_PORTAL_PASSWORD", "test-pass")
-os.environ.setdefault("ELD_BASE_URL", "https://eld.example.com")
-
+import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+
+pytest.importorskip("googleapiclient")
 
 from app.services.googleCloud.dependencies import get_gmail_service_account_controller
 from app.services.googleCloud.endpoints import router
@@ -79,7 +74,9 @@ def _build_client():
     fake_controller = FakeGmailController()
     app = FastAPI()
     app.include_router(router)
-    app.dependency_overrides[get_gmail_service_account_controller] = lambda: fake_controller
+    app.dependency_overrides[get_gmail_service_account_controller] = (
+        lambda: fake_controller
+    )
     return TestClient(app), fake_controller
 
 
@@ -88,8 +85,8 @@ def test_send_message_uses_dependency_and_sends_to_receipt_email():
     response = client.post(
         "/api/gmail/send",
         json={
-            "From": {"noreply@bwheelstransport.com": "BWT Dispatch"},
-            "To": ["ramirez.garcia.ramiro85@gmail.com"],
+            "From": {"noreply@example.com": "Dispatch Bot"},
+            "To": ["recipient@example.net"],
             "Subject": "Driver information",
             "body": "<p>Driver payload</p>",
         },
@@ -99,8 +96,8 @@ def test_send_message_uses_dependency_and_sends_to_receipt_email():
     assert response.json()["success"] is True
     method, message = fake_controller.calls[0]
     assert method == "send_message"
-    assert "ramirez.garcia.ramiro85@gmail.com" in message.To
-    assert message.username == "noreply@bwheelstransport.com"
+    assert "recipient@example.net" in message.To
+    assert message.username == "noreply@example.com"
 
 
 def test_search_thread_forwards_query_fields():
@@ -109,8 +106,8 @@ def test_search_thread_forwards_query_fields():
         "/api/gmail/search_thread",
         json={
             "subject": "Driver information",
-            "username": "noreply@bwheelstransport.com",
-            "from_email": "ramirez.garcia.ramiro85@gmail.com",
+            "username": "noreply@example.com",
+            "from_email": "recipient@example.net",
         },
     )
 
@@ -119,8 +116,8 @@ def test_search_thread_forwards_query_fields():
     method, payload = fake_controller.calls[0]
     assert method == "search_thread"
     assert payload["query_subject"] == "Driver information"
-    assert payload["username"] == "noreply@bwheelstransport.com"
-    assert payload["from_email"] == "ramirez.garcia.ramiro85@gmail.com"
+    assert payload["username"] == "noreply@example.com"
+    assert payload["from_email"] == "recipient@example.net"
 
 
 def test_find_messages_forwards_query_fields():
@@ -129,8 +126,8 @@ def test_find_messages_forwards_query_fields():
         "/api/gmail/find_messages",
         json={
             "subject": "Driver information",
-            "username": "noreply@bwheelstransport.com",
-            "from_email": "ramirez.garcia.ramiro85@gmail.com",
+            "username": "noreply@example.com",
+            "from_email": "recipient@example.net",
         },
     )
 
@@ -139,8 +136,8 @@ def test_find_messages_forwards_query_fields():
     method, payload = fake_controller.calls[0]
     assert method == "find_messages"
     assert payload["query_subject"] == "Driver information"
-    assert payload["username"] == "noreply@bwheelstransport.com"
-    assert payload["from_email"] == "ramirez.garcia.ramiro85@gmail.com"
+    assert payload["username"] == "noreply@example.com"
+    assert payload["from_email"] == "recipient@example.net"
 
 
 def test_get_attachment_forwards_query_fields():
@@ -150,7 +147,7 @@ def test_get_attachment_forwards_query_fields():
         json={
             "thread_id": "thread-123",
             "filename": "driver.pdf",
-            "username": "noreply@bwheelstransport.com",
+            "username": "noreply@example.com",
             "save_dir": "docs",
         },
     )
@@ -161,7 +158,7 @@ def test_get_attachment_forwards_query_fields():
     assert method == "save_attachment"
     assert payload["thread_id"] == "thread-123"
     assert payload["filename"] == "driver.pdf"
-    assert payload["username"] == "noreply@bwheelstransport.com"
+    assert payload["username"] == "noreply@example.com"
     assert payload["save_dir"] == "docs"
 
 
@@ -171,8 +168,8 @@ def test_get_contacts_forwards_query_fields():
         "/api/gmail/get_contacts",
         json={
             "subject": "Driver information",
-            "username": "noreply@bwheelstransport.com",
-            "from_email": "ramirez.garcia.ramiro85@gmail.com",
+            "username": "noreply@example.com",
+            "from_email": "recipient@example.net",
         },
     )
 
@@ -181,5 +178,5 @@ def test_get_contacts_forwards_query_fields():
     method, payload = fake_controller.calls[0]
     assert method == "find_contacts"
     assert payload["query_subject"] == "Driver information"
-    assert payload["username"] == "noreply@bwheelstransport.com"
-    assert payload["from_email"] == "ramirez.garcia.ramiro85@gmail.com"
+    assert payload["username"] == "noreply@example.com"
+    assert payload["from_email"] == "recipient@example.net"

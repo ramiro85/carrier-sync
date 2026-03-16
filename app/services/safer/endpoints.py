@@ -9,8 +9,9 @@ router = APIRouter()
 
 @router.api_route(
     methods=["GET"],
-    path="/api/safer/search/{query_field}/{query_value}", deprecated=False)
-def search_company(query_field: str, query_value: str)-> Company | ResponseModel:
-    """Search for a company in the SAFER database based on the specified query field and value."""
-    companies = check_company(query_field, query_value)
-    return companies
+    path="/api/safer/search/{query_field}/{query_value}",
+    deprecated=False,
+)
+def search_company(query_field: str, query_value: str) -> Company | ResponseModel:
+    """Look up a carrier profile by query field/value in the SAFER public database."""
+    return check_company(query_field, query_value)

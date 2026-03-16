@@ -61,7 +61,6 @@ class ReliableApi:
             dict: Response containing authentication token and user information
         """
         if self.is_auth and not force and self.auth_token:
-            print("Already authenticated, using existing token")
             return {"accessToken": self.auth_token}
 
         payload = {
@@ -73,16 +72,15 @@ class ReliableApi:
             "otp": None,
             "action": None,
             "twoFaIsEnabled": False,
-            "browserFingerPrint": None
+            "browserFingerPrint": None,
         }
 
         try:
-            print("Attempting to authenticate with ELD API...")
             response = requests.post(
                 self.authentication_url,
                 headers=self.headers_base,
                 data=json.dumps(payload),
-                timeout=30
+                timeout=30,
             )
             response.raise_for_status()
 
@@ -94,7 +92,6 @@ class ReliableApi:
                 # Update headers with the new token
                 self.headers_base["authorization"] = self.auth_token
                 self.is_auth = True
-                print(f"✓ Successfully authenticated. Token obtained.")
             else:
                 raise Exception("No accessToken in response")
 
@@ -103,9 +100,6 @@ class ReliableApi:
         except requests.exceptions.RequestException as e:
             self.is_auth = False
             self.auth_token = None
-            print(f"✗ Login failed: {str(e)}")
-            if hasattr(e, 'response') and e.response is not None:
-                print(f"Response content: {e.response.text}")
             raise Exception(f"Authentication failed: {str(e)}")
 
     def refresh_token(self):
@@ -115,7 +109,6 @@ class ReliableApi:
         Returns:
             str: New authentication token
         """
-        print("🔄 Refreshing authentication token...")
         self.login(force=True)
         return self.auth_token
 
@@ -131,12 +124,10 @@ class ReliableApi:
         """
         # If we don't have a token, we're not logged in
         if not self.auth_token:
-            print("No token available, attempting login...")
             try:
                 self.login()
                 return self.is_auth
-            except Exception as e:
-                print(f"Login attempt failed: {str(e)}")
+            except Exception:
                 return False
 
         # Verify token is still valid by making a test request
@@ -152,7 +143,7 @@ class ReliableApi:
             "Sec-Fetch-Dest": "empty",
             "Sec-Fetch-Mode": "cors",
             "Sec-Fetch-Site": "cross-site",
-            'If-None-Match': 'W/"2594a-ZblHutHTZYxIqRMZGJrBLDH++9I"',
+            "If-None-Match": 'W/"2594a-ZblHutHTZYxIqRMZGJrBLDH++9I"',
         }
 
         try:
@@ -161,18 +152,15 @@ class ReliableApi:
             )
 
             if response is not None and response.status_code == 401:
-                print("Token expired (401), refreshing...")
                 self.is_auth = False
                 self.login(force=True)
             elif response is not None and response.status_code == 403:
-                print("Token forbidden (403), refreshing...")
                 self.is_auth = False
                 self.login(force=True)
             else:
                 self.is_auth = True
 
-        except requests.exceptions.RequestException as e:
-            print(f"Token validation failed: {str(e)}, attempting refresh...")
+        except requests.exceptions.RequestException:
             self.is_auth = False
             try:
                 self.login(force=True)

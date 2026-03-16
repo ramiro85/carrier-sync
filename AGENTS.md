@@ -95,6 +95,6 @@ When adding a new resource or endpoint, follow this order:
 
 | Area                  | Owner     |
 |-----------------------|-----------|
-| API design            | @ramiro85 |
-| Auth / security       | @ramiro85 |
-| CI / DevOps           | @ramiro85 |
+| API design            | TBD |
+| Auth / security       | TBD |
+| CI / DevOps           | TBD |

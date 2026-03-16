@@ -5,6 +5,7 @@ from enum import Enum
 
 class StateCode(str, Enum):
     """Valid US state and territory codes"""
+
     AK = "AK"  # Alaska
     AL = "AL"  # Alabama
     AR = "AR"  # Arkansas

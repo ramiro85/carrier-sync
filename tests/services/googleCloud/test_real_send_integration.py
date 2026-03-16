@@ -1,25 +1,31 @@
 import os
 from datetime import datetime, timezone
 
-# Required settings for app.config at import time.
-os.environ.setdefault("SAFER_COOKIE", "test-cookie")
-os.environ.setdefault("TAFS_PORTAL_USERNAME", "test-user")
-os.environ.setdefault("TAFS_PORTAL_PASSWORD", "test-pass")
-os.environ.setdefault("ELD_BASE_URL", "https://eld.example.com")
+import pytest
+
+pytest.importorskip("googleapiclient")
 
 from app.config import settings
 from app.services.googleCloud.dependencies import GoogleServiceAccountApiController
 from app.services.googleCloud.schemas import TmsMessage
 
 
-def test_real_controller_send_message_to_ramirio_gmail():
+@pytest.mark.skipif(
+    os.getenv("RUN_REAL_INTEGRATION_TESTS", "").lower() != "true",
+    reason="Set RUN_REAL_INTEGRATION_TESTS=true to run live Gmail integration tests.",
+)
+def test_real_controller_send_message():
     controller = GoogleServiceAccountApiController()
-    sender = settings.google_workspace_impersonated_user_account1
+    sender = os.getenv(
+        "INTEGRATION_TEST_GMAIL_SENDER",
+        settings.google_workspace_impersonated_user_account1,
+    )
+    recipient = os.getenv("INTEGRATION_TEST_GMAIL_RECIPIENT", "recipient@example.net")
     timestamp = datetime.now(timezone.utc).isoformat()
     message = TmsMessage(
-        From={sender: "Jobee API Test"},
-        To=["ramirez.garcia.ramiro85@gmail.com"],
-        Subject=f"[Integration] Jobee Gmail Send Test {timestamp}",
+        From={sender: "Integration Test Bot"},
+        To=[recipient],
+        Subject=f"[Integration] Gmail Send Test {timestamp}",
         body="<p>Integration test email from real Google service-account controller.</p>",
     )
 

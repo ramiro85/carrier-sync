@@ -7,7 +7,7 @@ gmail_api = GoogleServiceAccountApiController()
 
 
 class CoreControlCombiner(ControlCombiner):
-    def __init__(self, tafs, gmail=None ):
+    def __init__(self, tafs, gmail=None):
         (
             self.tafs_ctrl,
             self.gmail_api,
@@ -17,7 +17,4 @@ class CoreControlCombiner(ControlCombiner):
         )
 
 
-ctrl = CoreControlCombiner(
-    tafs=tafs_ctrl,
-    gmail=gmail_api
-)
+ctrl = CoreControlCombiner(tafs=tafs_ctrl, gmail=gmail_api)

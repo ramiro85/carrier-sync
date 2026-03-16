@@ -33,11 +33,15 @@ class Settings(BaseSettings):
     )
 
     # SAFER Service Configuration
-    safer_base_url: str = Field(default="https://safer.fmcsa.dot.gov", alias="SAFER_BASE_URL")
+    safer_base_url: str = Field(
+        default="https://safer.example.com", alias="SAFER_BASE_URL"
+    )
     safer_base_cookie: str = Field(alias="SAFER_COOKIE")
 
     # TAFS Service Configuration
-    tafs_portal_url: str = Field(default="https://safer.fmcsa.dot.gov", alias="TAFS_PORTAL_URL")
+    tafs_portal_url: str = Field(
+        default="https://tafs.example.com", alias="TAFS_PORTAL_URL"
+    )
     tafs_portal_username: str = Field(alias="TAFS_PORTAL_USERNAME")
     tafs_portal_password: str = Field(alias="TAFS_PORTAL_PASSWORD")
 

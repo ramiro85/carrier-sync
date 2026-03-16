@@ -2,7 +2,6 @@ from app.config import settings
 from app.services.eld.driver.controller import ELDDriverController
 from app.services.eld.eld_api import ReliableApi
 
-
 # Shared instance of ReliableApi to maintain session across requests
 _eld_api_instance = None
 
@@ -36,7 +35,7 @@ def get_eld_controller() -> ELDDriverController:
     controller = ELDDriverController(
         base_url=settings.eld_base_url,
         authorization_token=token,
-        eld_api=eld_api  # Pass API instance for token refresh
+        eld_api=eld_api,  # Pass API instance for token refresh
     )
 
     return controller

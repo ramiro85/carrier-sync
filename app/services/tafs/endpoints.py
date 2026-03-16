@@ -5,21 +5,24 @@ from app.services.tafs.dependencies import get_active_tafs_session
 
 router = APIRouter()
 
+
 @router.get("/api/tafs/search_broker/{mc}")
 def search_broker(
     mc: str,
-    tafs: TafsController = Depends(get_active_tafs_session)
-):
-    # 'tafs' here is the authenticated controller
+    tafs: TafsController = Depends(get_active_tafs_session),
+) -> dict:
+    """Search broker information and associated debtor data by MC number."""
     response = tafs.search_broker(mc)
     return {"brokers": response}
+
 
 @router.get("/api/tafs/load_debtor/{account_id}")
 def load_debtor(
     account_id: str,
-    mc: str,
-    tafs: TafsController = Depends(get_active_tafs_session)
-):
-    # This logic will only execute if the session is alive
-    response = tafs.load_debtor(mc, account_id)
+    mc: str | None = None,
+    tafs: TafsController = Depends(get_active_tafs_session),
+) -> dict:
+    """Load full debtor details for an account ID."""
+    _ = mc  # Kept for backward compatibility with existing query callers.
+    response = tafs.load_debtor(account_id)
     return {"debtor": response}

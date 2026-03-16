@@ -2,11 +2,13 @@ from typing import Optional
 
 from pydantic import BaseModel as PydanticBaseModel
 
+
 class TafsUser(PydanticBaseModel):
     username: Optional[str] = None
 
     class Config:
         from_attributes = True
+
 
 class TafDebtor(PydanticBaseModel):
     account_id: str | None = None

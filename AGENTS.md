@@ -1,4 +1,4 @@
-# AGENTS.md — Python / Jobee API Project
+# AGENTS.md — Python / API Project
 
 This file provides guidance for AI agents (Codex, Claude, Cursor, Copilot, etc.) working in this codebase. Read it fully before making any changes.
 
@@ -32,10 +32,9 @@ Configuration is managed through `api/config.py` and environment variables in `.
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    database_url: str
-    secret_key: str
-    access_token_expire_minutes: int = 30
-    environment: str = "development"
+    attachment_path: str 
+    gcp_project_id: str 
+    gcp_region: str 
 
     class Config:
         env_file = ".env"

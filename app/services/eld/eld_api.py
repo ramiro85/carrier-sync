@@ -10,9 +10,9 @@ class ReliableApi:
         "accept": "application/json",
         "accept-language": "en-US,en;q=0.9",
         "content-type": "application/json",
-        "origin": "https://eld.hgrs.us",
+        "origin": settings.eld_origin,
         "priority": "u=1, i",
-        "referer": "https://eld.hgrs.us/",
+        "referer": settings.eld_origin,
         "sec-ch-ua": '"Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"',
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": '"Linux"',
@@ -44,7 +44,7 @@ class ReliableApi:
 
     auth_token = None
     is_auth = False
-    authentication_url = "https://backend.apexhos.com/authentication"
+    authentication_url = f"{settings.eld_base_url}/authentication"
 
     def __init__(self):
         self.auth_token = None
@@ -66,8 +66,8 @@ class ReliableApi:
 
         payload = {
             "strategy": "local",
-            "email": "vanessa@jobeeexpress.com",
-            "password": "1234567899",
+            "email": settings.eld_username,
+            "password": settings.eld_password,
             "company": None,
             "rCode": "highest",
             "otp": None,
@@ -140,7 +140,7 @@ class ReliableApi:
                 return False
 
         # Verify token is still valid by making a test request
-        url = f"https://backend.apexhos.com/maintenance_reminders"
+        url = f"{settings.eld_base_url}/maintenance_reminders"
 
         headers = {
             "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/111.0",

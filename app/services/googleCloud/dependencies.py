@@ -9,7 +9,7 @@ from app.services.googleCloud.controller import GoogleApiController
 
 
 class GoogleServiceAccountApiController(GoogleApiController):
-    SUPPORTED_WORKSPACE_DOMAINS = {"jobeeexpress.com", "bwheelstransport.com"}
+    SUPPORTED_WORKSPACE_DOMAINS = {settings.google_workspace_domain_account1, settings.google_workspace_domain_account2}
     SCOPES = [
         "https://www.googleapis.com/auth/gmail.readonly",
         "https://www.googleapis.com/auth/gmail.modify",
@@ -24,14 +24,14 @@ class GoogleServiceAccountApiController(GoogleApiController):
 
     def _resolve_account(self, username: str | None) -> tuple[str, str]:
         domain = self._get_domain(username)
-        if domain == "bwheelstransport.com":
+        if domain == settings.google_workspace_domain_account1:
             return (
-                settings.google_service_account_file_bwt,
-                settings.google_workspace_impersonated_user_bwt,
+                settings.google_service_account_file_account1,
+                settings.google_workspace_impersonated_user_account1,
             )
         return (
-            settings.google_service_account_file_jobee,
-            settings.google_workspace_impersonated_user_jobee,
+            settings.google_service_account_file_account2,
+            settings.google_workspace_impersonated_user_account2,
         )
 
     @staticmethod

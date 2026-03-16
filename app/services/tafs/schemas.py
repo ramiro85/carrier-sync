@@ -4,7 +4,6 @@ from pydantic import BaseModel as PydanticBaseModel
 
 class TafsUser(PydanticBaseModel):
     username: Optional[str] = None
-    # password: Optional[str] = None
 
     class Config:
         from_attributes = True

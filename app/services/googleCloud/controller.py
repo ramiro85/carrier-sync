@@ -7,11 +7,11 @@ from googleapiclient.errors import HttpError
 from app.core.schemas import ResponseModel
 from app.core.utils import get_headers_object, clean_email, get_contact_list
 from app.services.googleCloud.schemas import TmsMessage
+from app.config import settings
 
 
 class GoogleApiController:
     creds, service, logged = None, None, False
-    WEB_APP_PATH = '/var/www/html/jobee/'
 
     def __init__(self):
         super().__init__()
@@ -69,12 +69,12 @@ class GoogleApiController:
         message = self.search_messages_by_thread_id(username, thread_id)
         msg_id = message['id']
         parts = message.get('payload', {}).get('parts', [])
-        save_path = self.WEB_APP_PATH + save_dir
+        save_path = settings.attachment_path + save_dir
         multiple = False
         save_path_temp = ''
         pdf_file_names = []
         if len(parts) > 2:
-            save_path_temp = self.WEB_APP_PATH + save_dir + f'/{filename[:-4]}'
+            save_path_temp = settings.attachment_path + save_dir + f'/{filename[:-4]}'
             os.makedirs(save_path_temp, exist_ok=True)
             multiple = True
         else:

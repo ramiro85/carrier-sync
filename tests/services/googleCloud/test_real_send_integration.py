@@ -14,7 +14,7 @@ from app.services.googleCloud.schemas import TmsMessage
 
 def test_real_controller_send_message_to_ramirio_gmail():
     controller = GoogleServiceAccountApiController()
-    sender = settings.google_workspace_impersonated_user_jobee
+    sender = settings.google_workspace_impersonated_user_account1
     timestamp = datetime.now(timezone.utc).isoformat()
     message = TmsMessage(
         From={sender: "Jobee API Test"},

@@ -4,7 +4,6 @@ from app.services.safer.controller import parse_address, is_inactive, find_value
 BeautifulSoup = pytest.importorskip("bs4").BeautifulSoup
 
 
-
 def test_parse_address_returns_model_for_valid_address():
     address = "123 Main St, Austin, TX 78701"
 

@@ -182,7 +182,15 @@ class GoogleApiController:
 
     def find_contacts(self, username, query_subject, after=None, from_email=None):
         """Extract unique contacts from matching threads."""
-        success, message, result, = False, "", []
+        (
+            success,
+            message,
+            result,
+        ) = (
+            False,
+            "",
+            [],
+        )
         threads = self.find_thread(
             username=username, after=after, from_email=from_email
         )

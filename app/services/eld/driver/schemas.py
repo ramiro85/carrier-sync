@@ -1,5 +1,5 @@
 from typing import Optional, List
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from enum import Enum
 
 
@@ -67,8 +67,7 @@ class RoleId(BaseModel):
 class StateId(BaseModel):
     id: StateCode
 
-    class Config:
-        use_enum_values = True
+    model_config = ConfigDict(use_enum_values=True)
 
 
 class TerminalId(BaseModel):
@@ -133,8 +132,7 @@ class DriverInfo(BaseModel):
 class OuId(BaseModel):
     id: StateCode  # Also uses state codes
 
-    class Config:
-        use_enum_values = True
+    model_config = ConfigDict(use_enum_values=True)
 
 
 class TypeId(BaseModel):
